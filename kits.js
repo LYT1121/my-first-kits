@@ -1,7 +1,7 @@
 var kits = {};
 // 获取一个固定的时间
 // 时间的函数封装
-kits.fun3 = function () {
+/* kits.fun3 = function () {
     var date = new Date();
     var year = date.getFullYear(); //年
     var month = date.getMonth() + 1; //月
@@ -14,6 +14,28 @@ kits.fun3 = function () {
     var hour = hour < 10 ? '0' + hour : hour;
     var minute = minute < 10 ? '0' + minute : minute;
     var second = second < 10 ? '0' + second : second;
+    var time = '当前的时间是：' + year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+    return time;
+} */
+kits.zero =function (number) {
+    if (number < 10) {
+        number = '0' + number;
+    }
+    return number;
+}
+kits.fun2 =function () {
+    var date = new Date();
+    var year = date.getFullYear(); //年
+    var month = date.getMonth() + 1; //月
+    var day = date.getDate(); //日
+    var hour = date.getHours(); //时
+    var minute = date.getMinutes(); //分
+    var second = date.getSeconds(); //秒
+    month = zero(month);
+    day = zero(day);
+    hour = zero(hour);
+    minute = zero(minute);
+    second = zero(second);
     var time = '当前的时间是：' + year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
     return time;
 }
