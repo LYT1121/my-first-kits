@@ -9,17 +9,30 @@ kits.fun3 = function () {
     var hour = date.getHours(); //时
     var minute = date.getMinutes(); //分
     var second = date.getSeconds(); //秒
-    //调用上一个函数
-    month = fun3(month);
-    day = fun3(day);
-    hour = fun3(hour);
-    minute = fun3(minute);
-    second = fun3(second);
+    var month = month < 10 ? '0' + month : month;
+    var day = day < 10 ? '0' + day : day;
+    var hour = hour < 10 ? '0' + hour : hour;
+    var minute = minute < 10 ? '0' + minute : minute;
+    var second = second < 10 ? '0' + second : second;
     var time = '当前的时间是：' + year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
-    alert(time);
     return time;
 }
 
+
+// 随机整数
+kits.randomInt = function(n,m){
+    return Math.floor(Math.random()*(m-n+1)+n);
+}
+
+// 封装的是一个可以生成唯一id的方法
+kits.prinaryKey = function(){
+// 我们通过时间蹉+大范围的随机数来生成id
+let now = Date.now();//得到的是1970年到现在的毫秒数
+// 为了防止在1毫秒之内生成的id有多个，再次加上一个大范围的随机数
+let r = kits.randomInt(100000,999999);
+// 把两个得到的结果，拼接起来
+return now + '' + r;
+}
 
 
 // 十六进制随机颜色获取方法一
@@ -35,6 +48,7 @@ kits.integercolor = function () {
     }
     return color;
 }
+
 // console.log(integercolor());
 // 获取元素，注册事件
 // 在事件的处理程序里面实现随机颜色
@@ -93,19 +107,19 @@ kits.randomcolor = function () {
 
 // 方法二
 // 封装一个可以获取随机区间的整数
-kits.int = function(n, m) {
+kits.int = function (n, m) {
     return Math.floor(Math.random() * (m - n + 1) + n);
 }
 // 封装一个可以获取随机浮点数的函数
-kits.int1 = function() {
+kits.int1 = function () {
     return Math.floor(Math.random() * 10) / 10;
 }
 // 封装一个可以获得随机整数的函数 rgba取值
-kits.intcolor = function() {
+kits.intcolor = function () {
     var r = int(0, 255);
     var g = int(0, 255);
     var b = int(0, 255);
     var a = int1(0, 1);
     return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
-// alert(intcolor());  
+// alert(intcolor());
