@@ -17,13 +17,13 @@ var kits = {};
     var time = '当前的时间是：' + year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
     return time;
 } */
-kits.zero =function (number) {
+kits.zero = function (number) {
     if (number < 10) {
         number = '0' + number;
     }
     return number;
 }
-kits.fun2 =function () {
+kits.fun2 = function () {
     var date = new Date();
     var year = date.getFullYear(); //年
     var month = date.getMonth() + 1; //月
@@ -42,18 +42,18 @@ kits.fun2 =function () {
 
 
 // 随机整数
-kits.randomInt = function(n,m){
-    return Math.floor(Math.random()*(m-n+1)+n);
+kits.randomInt = function (n, m) {
+    return Math.floor(Math.random() * (m - n + 1) + n);
 }
 
 // 封装的是一个可以生成唯一id的方法
-kits.prinaryKey = function(){
-// 我们通过时间蹉+大范围的随机数来生成id
-let now = Date.now();//得到的是1970年到现在的毫秒数
-// 为了防止在1毫秒之内生成的id有多个，再次加上一个大范围的随机数
-let r = kits.randomInt(100000,999999);
-// 把两个得到的结果，拼接起来
-return now + '' + r;
+kits.prinaryKey = function () {
+    // 我们通过时间蹉+大范围的随机数来生成id
+    let now = Date.now();//得到的是1970年到现在的毫秒数
+    // 为了防止在1毫秒之内生成的id有多个，再次加上一个大范围的随机数
+    let r = kits.randomInt(100000, 999999);
+    // 把两个得到的结果，拼接起来
+    return now + '' + r;
 }
 
 
@@ -145,3 +145,32 @@ kits.intcolor = function () {
     return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
 // alert(intcolor());
+
+
+// 用于把很多重复使用的代码，进行封装，到时候直接使用
+/**
+  * @description 读取存储在localStorage里面的数组的
+  * @param {string} key 存储数据使用的键
+  * @return {Array} 返回一个数组，如果不存在，返回空数组
+  */
+function loadData(key) {
+    var str = localStorage.getItem(key);
+    var arr = JSON.parse(str);
+    if (!arr) {
+        arr = [];
+    }
+    return arr;
+}
+
+/**
+ * @description 用于将数组存储到localStorage里面的方法
+ * @param {string} key 存储使用的键
+ * @param {Array} arr 要存储的数组数据
+ * @return {undefined}
+ */
+function saveData(key, arr) {
+    var json = JSON.stringify(arr);
+    localStorage.setItem(key, json);
+}
+
+
