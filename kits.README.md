@@ -80,13 +80,13 @@ kits.int1方法
 
 
 
-*function* loadData方法
+*kits.*loadData方法
 
 读取存储在localStorage里面的数组的
 
 调用方式：*function* loadData(*提取的键*)
 
-*function* saveData方法
+*kits.saveData方法
 
 数组存储到localStorage里面
 
@@ -96,8 +96,18 @@ kits.int1方法
 
 
 
-*function* total方法
+kits.total方法
 
 计算购物车里面的商品总量
 
 调用方式：*function* total();
+
+
+
+
+
+kits.cleckAll方法
+
+调用函数，并在有全选框的地方使用方法中的id和class即可使用此方法
+
+调用方式：kits.cleckAll(全选框id，复选框选择器)；

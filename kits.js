@@ -153,7 +153,7 @@ kits.intcolor = function () {
   * @param {string} key 存储数据使用的键
   * @return {Array} 返回一个数组，如果不存在，返回空数组
   */
-function loadData(key) {
+kits.loadData = function (key) {
     var str = localStorage.getItem(key);
     var arr = JSON.parse(str);
     if (!arr) {
@@ -168,19 +168,66 @@ function loadData(key) {
  * @param {Array} arr 要存储的数组数据
  * @return {undefined}
  */
-function saveData(key, arr) {
+kits.saveData = function (key, arr) {
     var json = JSON.stringify(arr);
     localStorage.setItem(key, json);
 }
 
 // 封装计算购物车里面的商品总量的代码
-function total(){
+kits.total = function () {
     // 加载所有的数据
     var arr = loadData('shopCart');
     // 计算总件数
     var total = 0;
-    arr.forEach(function(e){
-      total += e.number;
+    arr.forEach(function (e) {
+        total += e.number;
     });
     return total;
-  }
+}
+
+
+/**
+ * @author cwq //1121024033@qq.com
+ * @date 2019/7/19
+ * @description  一个可以生成唯一id(尽可能)的方法
+ * @param {string} cleckall 全选框的id名称
+ * @param {string} clecktd 下面复选框的选择器名
+ * @return {undefined}
+ */
+//全选与反选
+kits.cleckAll = function (cleckall, clecktd) {
+    //1.声明变量存储获取的全选框和单个选框
+    let cleckAll = document.querySelector(cleckall);
+    let cleckTd = document.querySelectorAll(clecktd);
+    //2.全选框绑定点击事件
+    cleckAll.onclick = function () {
+        //3.声明变量存储全选框的checked值
+        let cleckAll1 = cleckAll.checked;
+        //4.循环遍历单个复选框
+        for (let i = 0; i < cleckTd.length; i++) {
+            //5.判断全选框为选中时，下面单个复选框全部选中，否则全部不选中
+            if (cleckAll1 === true) {
+                cleckTd[i].checked = true;
+            } else {
+                cleckTd[i].checked = false;
+            }
+        }
+    }
+    //6.循环给所有单个复选框绑定点击事件
+    for (let i = 0; i < cleckTd.length; i++) {
+        cleckTd[i].onclick = function () {
+            //7.使用反证法，假设全选框是选中状态
+            let flag = true;
+            //8.循环单个复选框的次数来判断单个复选框是否选中
+            for (let j = 0; j < cleckTd.length; j++) {
+                //9.循环至有一个未选择的时候改变全选框的选中状态为不选中
+                if (cleckTd[j].checked == false) {
+                    flag = false;
+                    break;
+                }
+            }
+            //10.改变全选框的状态
+            cleckAll.checked = flag;
+        }
+    }
+}
