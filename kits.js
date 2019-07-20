@@ -264,3 +264,27 @@ class SubscriptionPublishing_Model {
 }
 
 
+/**
+ * @author cwq //1121024033@qq.com
+ * @date 2019/7/20
+ * @description  封装递归函数，把数组转换成为树形结构
+ * @param {string} arr 就是从服务器获取回来的菜单数组
+ * @param {string} fjid 就是子级菜单的父级的id
+ * @return {数组}
+ */
+
+ kits.fn = function(arr,fjid){
+    //  定义一个空数组
+     let temp = [];
+    //  遍历从服务器获取回来的数组，判断父级
+    arr.forEach(e=>{
+        // 判断当前遍历的id是父级的id
+        if(e.ID === fjid){
+            // 怎么是其父级id，把元素放到数组里
+            temp.push(e);
+            // 继续构建子级
+            e.child = fn(arr,e.id);
+        }
+    });
+    return temp;
+ }
