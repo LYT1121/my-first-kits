@@ -231,3 +231,36 @@ kits.cleckAll = function (cleckall, clecktd) {
         }
     }
 }
+
+
+/**
+ * @author cwq //1121024033@qq.com
+ * @date 2019/7/20
+ * @description  封装发布订阅模式 行为型模式——>观察者模式(定义一对多的关系，让多个观察者对象同时监听某一个主题对象)
+ * @param {string} key 存储使用的键
+ * @param {string} fn 自定义函数
+ * @return {false}
+ */
+
+class SubscriptionPublishing_Model {
+    constructor() {
+        this.clientEvent = [];
+    }
+    add(key, fn) {
+        //如果事件源对象键名不为空，表示已存有，否则用空数组赋值
+        this.clientEvent[key] = this.clientEvent[key] || [];
+        this.clientEvent[key].push(fn)
+    }
+    trigger(key) {
+        // 根据key找到clientEvent数组里面的函数，然后一一调用
+        if (this.clientEvent[key]) {
+            this.clientEvent[key].forEach(e => {
+                e();
+            });
+        } else {
+            return false
+        }
+    }
+}
+
+
