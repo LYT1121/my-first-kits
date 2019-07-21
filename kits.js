@@ -187,7 +187,7 @@ kits.total = function () {
 
 
 /**
- * @author cwq //1121024033@qq.com
+ * @author lyt //1121024033@qq.com
  * @date 2019/7/19
  * @description  一个可以生成唯一id(尽可能)的方法
  * @param {string} cleckall 全选框的id名称
@@ -234,7 +234,7 @@ kits.cleckAll = function (cleckall, clecktd) {
 
 
 /**
- * @author cwq //1121024033@qq.com
+ * @author lyt //1121024033@qq.com
  * @date 2019/7/20
  * @description  封装发布订阅模式 行为型模式——>观察者模式(定义一对多的关系，让多个观察者对象同时监听某一个主题对象)
  * @param {string} key 存储使用的键
@@ -265,7 +265,7 @@ class SubscriptionPublishing_Model {
 
 
 /**
- * @author cwq //1121024033@qq.com
+ * @author lyt //1121024033@qq.com
  * @date 2019/7/20
  * @description  封装递归函数，把数组转换成为树形结构
  * @param {string} arr 就是从服务器获取回来的菜单数组
@@ -273,18 +273,124 @@ class SubscriptionPublishing_Model {
  * @return {数组}
  */
 
- kits.fn = function(arr,fjid){
+kits.fn = function (arr, fjid) {
     //  定义一个空数组
-     let temp = [];
+    let temp = [];
     //  遍历从服务器获取回来的数组，判断父级
-    arr.forEach(e=>{
+    arr.forEach(e => {
         // 判断当前遍历的id是父级的id
-        if(e.ID === fjid){
+        if (e.ID === fjid) {
             // 怎么是其父级id，把元素放到数组里
             temp.push(e);
             // 继续构建子级
-            e.child = fn(arr,e.id);
+            e.child = fn(arr, e.id);
         }
     });
     return temp;
- }
+}
+
+/**
+ * @author lyt //1121024033@qq.com
+ * @date 2019/7/21
+ * @description 封装ajax的步骤
+ * @param {object || null} options 对象 对象里面有四个键
+ * @example options{
+ *    type 请求方式
+ *    url 请求地址
+ *    data 请求回到服务器的数据 键=值&键=值格式
+ *    callback 回调函数  请求成功后函数里面写逻辑
+ * }
+ */
+//  1.不一定所有的请求都带参数 - 默认值
+// 2.多个参数传递按照一定的顺序就比较复杂 - 使用无序传参 - 对象传参
+kits.ajax = function (options) {
+    options = options || {};
+    options.type = options.type || 'get';//'post'
+    options.url = options.url || '';
+    // 回调函数可以不写这，请求成功后直接加也可以
+    options.callback = options.callback || function (res) {
+        console.log('你的回调函数没给，我们不建议这样干');
+        console.log(res);
+    };
+    options.data = options.data || '';
+    // 创建一个ajax实例
+    let xhr = new XMLHttpRequest();
+    // 如果是get请求，直接用？连接把数据拼接在url后面
+    if(options.type === 'get'){
+        // 例如：网址？username=小小
+        options.url +='?'+options.data;
+    }
+    // 准备打开请求地址，用实例的open方法  open(请求方法，请求地址)
+    xhr.open(options.type,options.url);
+    // 如果是post请求，把数据放在send的里面，在之前还得设置请求头
+    if(options.type === 'post'){
+        // 先设置请求头
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        // 发送post请求  实例的send方法, send(可以发送数据)
+        xhr.send(options.data);
+    }else{
+        // 发送get发送的请求
+        xhr.send();
+    }
+    // 监听通信的状态  onreadyStateChange事件
+    xhr.onreadystatechange = function(){
+        // 在通信状态处理函数内判断【readyState】和【status】是否是成功状态
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // 请求成功——写逻辑——因为逻辑未定，所以可以用一个回调函数
+            // 通过实例的 responseText 获取响应的数据
+            options.callback(xhr.responseText); //options.callback();
+        }
+    }
+}
+
+
+/**
+ * 老师封装的ajax函数
+ * @param {object} options 
+ * @example {
+    *  type : 请求方式 ，可以是get或者post
+    *  url : 请求的地址
+    *  data : 携带回服务器的数据
+    *  callback : 请求成功的回调函数
+    * }
+    */
+kits.ajax = function(options) {
+     options = options || {};
+     var type = options.type || 'get';
+     var url = options.url || '';
+     var data = options.data || {};
+     var callback = options.callback || null;
+     // 因为type别人在使用的时候，可能会写出不一样的大小写，统一在里面转换为小写
+     type = type.toLowerCase();
+     // 因为我们要求别人是以键值对的形式把数据传入，帮忙把对象转换为固定格式
+     // 键=值&键=值
+     var temp = [];
+     for (var key in data) {
+       temp.push(`${key}=${data[key]}`);
+     }
+     data = temp.join('&');
+   
+     // 1 创建异步对象
+     var xhr = new XMLHttpRequest();
+     // 2 告诉他去哪里获取数据
+     // 判断一下是否是get请求，如果是，就这样传递数据
+     if (type === 'get') {
+       xhr.open(type, url + '?' + data);
+       // 3 把他派出去
+       xhr.send();
+     } else {
+       xhr.open(type, url);
+       // 如果是post请求，还要设置请求头
+       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+       // 3 把他派出去
+       xhr.send(data);
+     }
+     // 4 时刻关注办事的进度
+     xhr.onreadystatechange = function () {
+       // 4 是请求完成响应回到浏览器，并且把响应报文解析完毕的状态
+       if (xhr.readyState == 4 && xhr.status == 200) {
+         // 在这里处理服务器返回数据之后的逻辑
+         callback && callback(xhr.responseText);
+       }
+     }
+   }

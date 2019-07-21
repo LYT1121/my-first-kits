@@ -131,3 +131,29 @@ kits.cleckAll方法
 多用于无限多级菜单
 
 调用方式：fn(服务器获取的数据结构，初始id)
+
+
+
+ajax步骤封装
+
+调用方式：ajax({
+
+​      data : 'userName=123',
+
+​      callback : function(res){console.log(res); },
+
+​      type: 'get',
+
+​      url : 'http://127.0.0.1:8080/isUserNameExist'  });
+
+或者：ajax({
+
+​        url: 'http://127.0.0.1:8080/getCodeWithoutPhone',
+
+​        callback: *function* (*res*) {
+
+​            *console*.log(res);
+
+​            *console*.log('这是我们自己的回调');}
+
+​    });
