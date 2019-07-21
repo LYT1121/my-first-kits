@@ -316,24 +316,24 @@ kits.ajax = function (options) {
     // 创建一个ajax实例
     let xhr = new XMLHttpRequest();
     // 如果是get请求，直接用？连接把数据拼接在url后面
-    if(options.type === 'get'){
+    if (options.type === 'get') {
         // 例如：网址？username=小小
-        options.url +='?'+options.data;
+        options.url += '?' + options.data;
     }
     // 准备打开请求地址，用实例的open方法  open(请求方法，请求地址)
-    xhr.open(options.type,options.url);
+    xhr.open(options.type, options.url);
     // 如果是post请求，把数据放在send的里面，在之前还得设置请求头
-    if(options.type === 'post'){
+    if (options.type === 'post') {
         // 先设置请求头
-        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         // 发送post请求  实例的send方法, send(可以发送数据)
         xhr.send(options.data);
-    }else{
+    } else {
         // 发送get发送的请求
         xhr.send();
     }
     // 监听通信的状态  onreadyStateChange事件
-    xhr.onreadystatechange = function(){
+    xhr.onreadystatechange = function () {
         // 在通信状态处理函数内判断【readyState】和【status】是否是成功状态
         if (xhr.readyState === 4 && xhr.status === 200) {
             // 请求成功——写逻辑——因为逻辑未定，所以可以用一个回调函数
@@ -354,43 +354,69 @@ kits.ajax = function (options) {
     *  callback : 请求成功的回调函数
     * }
     */
-kits.ajax = function(options) {
-     options = options || {};
-     var type = options.type || 'get';
-     var url = options.url || '';
-     var data = options.data || {};
-     var callback = options.callback || null;
-     // 因为type别人在使用的时候，可能会写出不一样的大小写，统一在里面转换为小写
-     type = type.toLowerCase();
-     // 因为我们要求别人是以键值对的形式把数据传入，帮忙把对象转换为固定格式
-     // 键=值&键=值
-     var temp = [];
-     for (var key in data) {
-       temp.push(`${key}=${data[key]}`);
-     }
-     data = temp.join('&');
-   
-     // 1 创建异步对象
-     var xhr = new XMLHttpRequest();
-     // 2 告诉他去哪里获取数据
-     // 判断一下是否是get请求，如果是，就这样传递数据
-     if (type === 'get') {
-       xhr.open(type, url + '?' + data);
-       // 3 把他派出去
-       xhr.send();
-     } else {
-       xhr.open(type, url);
-       // 如果是post请求，还要设置请求头
-       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-       // 3 把他派出去
-       xhr.send(data);
-     }
-     // 4 时刻关注办事的进度
-     xhr.onreadystatechange = function () {
-       // 4 是请求完成响应回到浏览器，并且把响应报文解析完毕的状态
-       if (xhr.readyState == 4 && xhr.status == 200) {
-         // 在这里处理服务器返回数据之后的逻辑
-         callback && callback(xhr.responseText);
-       }
-     }
-   }
+kits.ajax = function (options) {
+    options = options || {};
+    var type = options.type || 'get';
+    var url = options.url || '';
+    var data = options.data || {};
+    var callback = options.callback || null;
+    // 因为type别人在使用的时候，可能会写出不一样的大小写，统一在里面转换为小写
+    type = type.toLowerCase();
+    // 因为我们要求别人是以键值对的形式把数据传入，帮忙把对象转换为固定格式
+    // 键=值&键=值
+    var temp = [];
+    for (var key in data) {
+        temp.push(`${key}=${data[key]}`);
+    }
+    data = temp.join('&');
+
+    // 1 创建异步对象
+    var xhr = new XMLHttpRequest();
+    // 2 告诉他去哪里获取数据
+    // 判断一下是否是get请求，如果是，就这样传递数据
+    if (type === 'get') {
+        xhr.open(type, url + '?' + data);
+        // 3 把他派出去
+        xhr.send();
+    } else {
+        xhr.open(type, url);
+        // 如果是post请求，还要设置请求头
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+        // 3 把他派出去
+        xhr.send(data);
+    }
+    // 4 时刻关注办事的进度
+    xhr.onreadystatechange = function () {
+        // 4 是请求完成响应回到浏览器，并且把响应报文解析完毕的状态
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // 在这里处理服务器返回数据之后的逻辑
+            callback && callback(xhr.responseText);
+        }
+    }
+}
+
+
+
+// /**
+//  * @description: 深度克隆（可克隆函数）
+//  * @param : 无
+//  * @return: 深度克隆后的对象
+//  */
+// Object.prototype.deepClone = function () {
+//     let target = (this instanceof Array) ? [] : {}
+//     for (let key in this) {
+//         if (this.hasOwnProperty(key)) {
+//             console.log(this[key]);
+//             if ((this[key] instanceof Array) || this[key] instanceof Object && !(this[key] instanceof Function)) {
+//                 target[key] = this[key].deepClone();
+//             } else {
+//                 if (this[key] instanceof Function) {
+//                     target[key] = (this[key]).bind();
+//                 } else {
+//                     target[key] = this[key];
+//                 }
+//             }
+//         }
+//     }
+//     return target;
+// }
