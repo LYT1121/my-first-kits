@@ -266,6 +266,155 @@ class SubscriptionPublishing_Model {
 
 /**
  * @author lyt //1121024033@qq.com
+ * @date 2019/7/24
+ * @description  封装发布状态模式—— 使用不同的状态来代替判断以达到程序的可拓展性的最大优化——使用状态代替if-else
+ * @param {string} dom 要判断的元素
+ * @param {string} fn 自定义函数
+ *  @param {string} arr 存储自定义函数规则的数组
+ * @return {msg} 信息提示
+ */
+// 方法1(不完整)
+// 把所有的验证策略，封装到对象里面——调用的时候从对象身上通过键的方式获取
+let strategies = {
+    // 非空判断
+    isNonEmpty:function(val,msg){
+        if(val.trim().length === 0){
+            return msg;
+        }
+    },
+    // 字符长度判断
+    minLength:function(val,len,msg){
+        if(val.trim().length<len){
+            return msg;
+        }
+    },
+    // 验证手机号码格式
+    isMobile:function(val,msg){
+        // 验证是否是手机号码需要用到正则表达式
+        if(!/(^1[3|5|7|8][0-9]{9}$)/.text(val)){
+            return msg;
+        }
+    }
+}
+// 面向对象的封装 ： 抽象出类(构造函数),new 实例对象，调用实例对象去做事情
+// 写一个构造函数——有一个对象，它有一个方法，可以为我们向这个数组里面添加函数
+function Validator(){
+    // 有一个数组
+    this.validateFuncs = [];
+}
+// 给构造函数的原型添加一个方法，让其可以添加一个新的函数进去
+// 变量为要判断的元素和规则数组
+Validator.prototype.add = function(dom,arr){
+    // 遍历数组，往this.validateFuncs 里添加新的验证方法
+    for(let i=0; i<arr.length; i++){
+        // 声明一个变量存储对象
+        let fn = function(){
+            // 声明一个变量获取到数组里面的一个个规则对象
+            let rule = arr[i];
+            // 声明一个变量存储规则对象中函数名=属性值，使用冒号分割出来的数组
+            let params = rule.fnName.split(':');//例如：[minLength，8]
+            // 声明一个变量用来存储刚刚分割出来的数组的第一个参数
+            let fnName = params.shift();// fnName里面可能会包含参数
+            // 把判断的元素的内容放到数组的第一位
+            params.unshift(dom.value);//[dom.vlaue,8]
+            // 把判断的元素的提示信息部分放在数组的后面
+            params.push(rule.errMsg);// [dom.value,8,rule.errMsg];
+             // 采用apply的方式调用函数
+             // 函数名.apply(新this,[参数1，参数2，参数3])
+             return strategies[fnName].apply(dom,params);
+            //  例如:// return strategies.isNonEmpty(form.password.value,'密码不能为空');
+        }
+        this.validateFuncs.push(fn);
+    }
+}
+// 开始验证的方法
+// 需要一个可以把数组里面的每个函数都执行的方法
+Validator.prototype.start = function(){
+    for (let i = 0; i < this.validateFuncs.length; i++) {
+        let msg = this.validateFuncs[i]();
+        if (msg) {
+          return msg;
+        }
+      }
+}
+
+// 参考别人的封装
+/* class State_Model {
+    constructor() {
+        //策略函数数组，用于声明策略
+        this.strategies = {};
+        //将要进行判断的策略函数数组
+        this.validateFuncs = [];
+        (function () {
+            this.init();
+        }).call(this)
+    }
+    //添加状态模式
+    add(dom, rules) {
+        // console.log(this.strategies)
+        let _this = this;
+        rules.forEach(e => {
+            let fn = function () {
+                let props = e.validateFunName.split(":");
+                let funcName = props.shift();
+                props.push(e.errMsg);
+                return (_this.strategies[funcName]).apply(this, [dom.value, ...props]);
+            }
+            _this.validateFuncs.push(fn);
+        });
+    }
+    //添加策略对象
+    addStrategies(strategy) {
+        this.strategies = strategy;
+    }
+    //策略判断（核心）
+    validate() {
+        if (this.validateFuncs) {
+            this.validateFuncs.forEach(e => {
+                //如果返回不为undefined则执行返回errMsg内容操作
+                let msg = e();
+                // console.log(msg)
+                if (msg) {
+                    // console.log(msg)
+                    return msg;
+                }
+            });
+        }
+    }
+    //初始化测试
+    init() {
+        this.addStrategies({
+            //用于判断输入数据是否为空
+            isNonEmpty: function (val, errMsg) {
+                    if (val === '') {
+                        return errMsg;
+                    }
+                }
+                //用于判断输入数据长度是否符合要求
+                ,
+            minLength: function (val, len, errMsg) {
+                    if (val.length < len) {
+                        return errMsg;
+                    }
+                }
+                //用于判断手机号码是否合法
+                ,
+            isPhone: function (val, errMsg) {
+                if (!(/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/).test(val)) {
+                    return errMsg;
+                }
+            }
+        });
+    }
+} */
+
+
+
+
+
+
+/**
+ * @author lyt //1121024033@qq.com
  * @date 2019/7/20
  * @description  封装递归函数，把数组转换成为树形结构
  * @param {string} arr 就是从服务器获取回来的菜单数组

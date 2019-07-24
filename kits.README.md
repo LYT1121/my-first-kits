@@ -165,3 +165,25 @@ kits.getUrlParams()
 获取地址栏？后面所有参数并转换为对象的方法
 
 调用方式：kits.getUrlParams()
+
+
+
+
+
+封装发布状态模式—— 使用不同的状态来代替判断以达到程序的可拓展性的最大优化——使用状态代替if-else
+
+调用方式：new一个Validator()，用得到的变量点方法名然后在里面写参数（一个元素一个规则数组）
+
+例如：let vld = new Validator();
+            vld.add(nameElment,[
+           {
+            fnName : 'isNonEmpty',
+           errMsg : '名字不能为空'
+           },
+          {
+          fnName : 'minLength:3',
+         errMsg : '名字的长度不能小于3'
+         }
+        ]);
+
+​           方法：let msg = vld.start();
