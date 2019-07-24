@@ -434,7 +434,7 @@ kits.getUrlParams = function(){
     // 以&符号将字符串分割成为数组
     let arr = search.split('&');
     // 声明一个空对象
-    let params = {};
+    let prams = {};
     // 遍历刚刚分割的数组
     arr.forEach(e=>{
         // 将数组中的所有值以=号分割为一个一个的字符串，每个键，每个值
@@ -444,8 +444,8 @@ kits.getUrlParams = function(){
         // 声明变量存储值
         let val = temp[1];
         // 对象的键=值，通过遍历填充对象
-        params[key] = val;
+        prams[key] = val;
     })
     // 函数返回拼接的对象
-    return params;
+    return prams;
 }
