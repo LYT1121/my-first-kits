@@ -420,3 +420,32 @@ kits.ajax = function (options) {
 //     }
 //     return target;
 // }
+
+
+/**
+ * @author lyt //1121024033@qq.com
+ * @date 2019-07-24
+ * @description 封装一个获取地址栏后面的所有参数并转换为对象的方法
+ * @return {object} 返回值是一个转换的对象
+ */
+kits.getUrlPrams = function(){
+    // 获取地址栏?后面的所有字符串
+    let search = location.search.substr(1);
+    // 以&符号将字符串分割成为数组
+    let arr = search.split('&');
+    // 声明一个空对象
+    let prams = {};
+    // 遍历刚刚分割的数组
+    arr.forEach(e=>{
+        // 将数组中的所有值以=号分割为一个一个的字符串，每个键，每个值
+        let temp = e.split('=');
+        // 声明变量存储键
+        let key = temp[0];
+        // 声明变量存储值
+        let val = temp[1];
+        // 对象的键=值，通过遍历填充对象
+        prams[key] = val;
+    })
+    // 函数返回拼接的对象
+    return prams;
+}

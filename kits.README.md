@@ -157,3 +157,11 @@ ajax步骤封装
 ​            *console*.log('这是我们自己的回调');}
 
 ​    });
+
+
+
+kits.getUrlParams()
+
+获取地址栏？后面所有参数并转换为对象的方法
+
+调用方式：kits.getUrlParams()
