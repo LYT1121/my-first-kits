@@ -272,23 +272,23 @@ class SubscriptionPublishing_Model {
  * @param {string} fn 自定义函数
  *  @param {string} arr 存储自定义函数规则的数组
  * @return {msg} 信息提示
+ * @先创建一个构造函数的实例对象==>调用add方法传入此实例对象为参数==>组成一个数组==>调用start方法返回一个判断结构(提示)
  */
-// 方法1(不完整)
 // 把所有的验证策略，封装到对象里面——调用的时候从对象身上通过键的方式获取
 let strategies = {
-    // 非空判断
+    // 非空判断——变量有控件内容，提示
     isNonEmpty:function(val,msg){
         if(val.trim().length === 0){
             return msg;
         }
     },
-    // 字符长度判断
+    // 字符长度判断——变量有控件内容，字符长度，提示
     minLength:function(val,len,msg){
         if(val.trim().length<len){
             return msg;
         }
     },
-    // 验证手机号码格式
+    // 验证手机号码格式——变量有控件内容，提示
     isMobile:function(val,msg){
         // 验证是否是手机号码需要用到正则表达式
         if(!/(^1[3|5|7|8][0-9]{9}$)/.text(val)){
@@ -298,44 +298,48 @@ let strategies = {
 }
 // 面向对象的封装 ： 抽象出类(构造函数),new 实例对象，调用实例对象去做事情
 // 写一个构造函数——有一个对象，它有一个方法，可以为我们向这个数组里面添加函数
-function Validator(){
-    // 有一个数组
-    this.validateFuncs = [];
-}
-// 给构造函数的原型添加一个方法，让其可以添加一个新的函数进去
-// 变量为要判断的元素和规则数组
-Validator.prototype.add = function(dom,arr){
-    // 遍历数组，往this.validateFuncs 里添加新的验证方法
-    for(let i=0; i<arr.length; i++){
-        // 声明一个变量存储对象
-        let fn = function(){
-            // 声明一个变量获取到数组里面的一个个规则对象
-            let rule = arr[i];
-            // 声明一个变量存储规则对象中函数名=属性值，使用冒号分割出来的数组
-            let params = rule.fnName.split(':');//例如：[minLength，8]
-            // 声明一个变量用来存储刚刚分割出来的数组的第一个参数
-            let fnName = params.shift();// fnName里面可能会包含参数
-            // 把判断的元素的内容放到数组的第一位
-            params.unshift(dom.value);//[dom.vlaue,8]
-            // 把判断的元素的提示信息部分放在数组的后面
-            params.push(rule.errMsg);// [dom.value,8,rule.errMsg];
-             // 采用apply的方式调用函数
-             // 函数名.apply(新this,[参数1，参数2，参数3])
-             return strategies[fnName].apply(dom,params);
-            //  例如:// return strategies.isNonEmpty(form.password.value,'密码不能为空');
-        }
-        this.validateFuncs.push(fn);
+// 声明一个自定义构造函数（Validator）
+class Validator {
+    constructor() {
+        // 数组 — 存储所有验证的函数
+        this.validateFuncs = [];
     }
-}
-// 开始验证的方法
-// 需要一个可以把数组里面的每个函数都执行的方法
-Validator.prototype.start = function(){
-    for (let i = 0; i < this.validateFuncs.length; i++) {
-        let msg = this.validateFuncs[i]();
-        if (msg) {
-          return msg;
+    // 给构造函数的原型添加一个方法，让其可以添加一个新的函数进去
+    // 变量为要判断的元素和规则数组
+    add(dom, arr) {
+        // 遍历数组，往this.validateFuncs 里添加新的验证方法-可以用foreach的方法
+        arr.forEach(e=>{
+            // 声明一个变量存储对象
+            let fn = function () {
+                // 声明一个变量存储规则对象中函数名=属性值，使用冒号分割出来的数组
+                let params = e.fnName.split(':'); //例如：[minLength，8]
+                // 声明一个变量用来存储刚刚分割出来的数组的第一个参数
+                let fnName = params.shift(); // fnName里面可能会包含参数
+                // 把判断的元素的内容放到数组的第一位-在分割的数组的最前面插入元素的value值为数组的第一个数据
+                params.unshift(dom.value); //[dom.vlaue,8]
+                // 把判断的元素的提示信息部分放在分割数组的后面
+                params.push(e.errMsg); // [dom.value,8,rule.errMsg];
+                // 采用apply的方式调用函数(分割拼接好的数组的值)
+                // 函数名.apply(新this,[参数1，参数2，参数3])
+                return strategies[fnName].apply(dom, params);
+                //  例如:// return strategies.isNonEmpty(form.password.value,'密码不能为空');
+            };
+            // 将遍历得到的函数一个个插入validateFuncs数组中——方便start方法遍历调用
+            this.validateFuncs.push(fn);
+        })
+    }
+    // 开始验证的方法
+    // 需要一个可以把数组里面的每个函数都执行的方法
+    start() {
+        // 循环遍历validateFuncs数组里的==>add方法中的一个个存进这个数字的函数
+        for (let i = 0; i < this.validateFuncs.length; i++) {
+            // 声明一个变量用于获取 ==>每个规则函数按顺序调用判断不通过时返回的提示
+            let msg = this.validateFuncs[i]();
+            if (msg) {
+                return msg;
+            }
         }
-      }
+    }
 }
 
 // 参考别人的封装
