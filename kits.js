@@ -602,3 +602,47 @@ kits.getUrlParams = function(){
     // 函数返回拼接的对象
     return prams;
 }
+
+
+
+/**
+ * @author lyt //1121024033@qq.com
+ * @date 2019-07-27
+ * @description 封装一个根据form表单收集里面数据的方法=>原理是根据name属性和value属性
+ * @example formSelector 选择器
+ * @return [array] 返回值是一个数组=>键=值的方式
+ */
+kits.serialize = function(formSelector){
+    // 准备一个数组，里面负责存储key = value的形式
+    let arr = [];
+    // 获取form表单=>通过一个选择器
+    let form = document.querySelector(formSelector);
+    // 父元素.querySelectorAll(选择器) 根据选择器找到父元素的所有后代元素里面满足选择器要求的元素
+    let names = form.querySelectorAll('[name]');
+    // 遍历得到的所有带name的后代元素=>组成name和value
+    names.forEach(e=>{
+        // 特殊情况=>如果需要收集的数据里面有单选的情况下
+        // 如果是radio要求是选中才可以
+        if(e.type === 'radio' && e.checked){
+            // 获取name属性
+            let key = e.name;
+            // 获取value属性
+            let value = e.value;
+            // 变成键=值的方式
+            arr.push(key+'='+value);
+        }
+        // 处理那些不是单选框的
+        if(e.type !== 'radio'){
+            // 获取name属性
+            let key = e.name;
+            // 获取value属性
+            let value = e.value;
+            // 变成键=值的方式
+            arr.push(key+'='+value);
+        }
+    })
+    // 看最终要的是什么值=>键=值,键=值
+    // return arr;
+    // 看最终要的是什么值=>键=值&键=值=>join()方法用于把数组中的所有元素放入一个字符串
+    return arr.join('&');
+}

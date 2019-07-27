@@ -187,3 +187,17 @@ kits.getUrlParams()
         ]);
 
 ​           方法：let msg = vld.start();
+
+
+
+
+
+kits.serialize()
+
+根据form表单收集里面数据的方法=>原理是根据name属性和value属性获取=>键=值&键=值
+
+调用方式：kits.serialize(选择器)
+
+例如：// 收集数据
+
+  *let* data = serialize('#myform');
